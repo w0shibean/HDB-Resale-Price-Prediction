@@ -33,8 +33,8 @@ Python · pandas · XGBoost · SHAP · scikit-learn · Streamlit · data.gov.sg 
 
 ## Model Performance
 
-- R²: [fill in]
-- RMSE: [fill in]
+- R²: 0.9417
+- RMSE: 46,280.66
 
 ## StreamLit Live Demo
 
