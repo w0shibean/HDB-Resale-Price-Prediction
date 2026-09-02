@@ -38,4 +38,4 @@ Python · pandas · XGBoost · SHAP · scikit-learn · Streamlit · data.gov.sg 
 
 ## StreamLit Live Demo
 
-[Launch App](your-streamlit-link-here)
+[Launch App]([(https://hdb-resale-price-prediction-dusdmp3nbepmitnygkryhp.streamlit.app/))
