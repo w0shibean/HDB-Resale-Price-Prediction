@@ -50,8 +50,7 @@ Python · pandas · XGBoost · SHAP · scikit-learn · Streamlit · data.gov.sg 
 
 ## Running the Project
 
-Install the dependencies:
+Install the required dependencies:
 
-\```
+```bash
 pip install -r requirements.txt
-\```
