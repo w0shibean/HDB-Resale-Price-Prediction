@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import xgboost as xgb
 import pickle
 
 # Load cleaned data
@@ -31,13 +30,14 @@ else:
     st.warning("No transactions match this combination.")
 
 
-    
-
 st.header("Price Predictor")
 
-# Load trained model (save this from your Week 3 notebook first — see note below)
+# Load trained model
 model = pickle.load(open('xgb_model.pkl', 'rb'))
 
+pred_town = st.selectbox("Town (for prediction)", sorted(df['town'].unique()))
+pred_flat_type = st.selectbox("Flat Type (for prediction)", sorted(df['flat_type'].unique()))
+pred_flat_model = st.selectbox("Flat Model", sorted(df['flat_model'].unique()))
 pred_floor_area = st.number_input("Floor Area (sqm)", min_value=30, max_value=250, value=90)
 pred_storey_median = st.number_input("Storey (median)", min_value=1, max_value=50, value=10)
 pred_lease_years = st.number_input("Remaining Lease (years)", min_value=1, max_value=99, value=70)
@@ -45,12 +45,19 @@ pred_lease_commence = st.number_input("Lease Commence Year", min_value=1960, max
 
 if st.button("Predict Price"):
     # Build input row matching your training feature columns
-    input_data = pd.DataFrame({
-        'floor_area_sqm': [pred_floor_area],
-        'storey_median': [pred_storey_median],
-        'remaining_lease_years': [pred_lease_years],
-        'lease_commence_date': [pred_lease_commence],
-        # add one-hot columns for town/flat_type/flat_model here, matching training set
-    })
-    prediction = model.predict(input_data)[0]
+    input_row = pd.DataFrame([{
+        'town': pred_town,
+        'flat_type': pred_flat_type,
+        'flat_model': pred_flat_model,
+        'floor_area_sqm': pred_floor_area,
+        'storey_median': pred_storey_median,
+        'remaining_lease_years': pred_lease_years,
+        'lease_commence_date': pred_lease_commence,
+    }])
+
+    # One-hot encode to match training, then align to the model's exact columns
+    input_encoded = pd.get_dummies(input_row, columns=['town', 'flat_type', 'flat_model'], drop_first=True)
+    input_aligned = input_encoded.reindex(columns=model.feature_names_in_, fill_value=0)
+
+    prediction = model.predict(input_aligned)[0]
     st.success(f"Predicted Resale Price: ${prediction:,.0f}")
